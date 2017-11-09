@@ -7,7 +7,7 @@ const http = require("http")
 const exp = express()
 const jetpack = require("fs-jetpack");
 const jwt = require('jwt-simple');
-var secret = jetpack.read('./secret.text','txt');
+var secret = jetpack.read('./secret.json','json');
 
 var server2 = http.createServer(exp).listen(333);
 exp.use('/public',express.static(__dirname+'/public'));
@@ -158,7 +158,7 @@ wss.on("connection", function(ws){
 
         user_db.forEach((v)=>{
           if(v.userName == message.data.name){
-            let token = jwt.encode(message.data.password,secret)
+            let token = jwt.encode(message.data.password,secret[0])
             console.log(token)
             if(v.password == token){
               let obj = {type:'LOGIN',data:v}
@@ -191,7 +191,7 @@ wss.on("connection", function(ws){
         console.log(message.data)
 
         console.log(message.data)
-        let token2 = jwt.encode(message.data.password,secret)
+        let token2 = jwt.encode(message.data.password,secret[0])
         let mm = {
           userName:message.data.name,
           mail:message.data.mail,
