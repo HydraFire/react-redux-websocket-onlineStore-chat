@@ -7,9 +7,9 @@ const http = require("http")
 const exp = express()
 const jetpack = require("fs-jetpack");
 const jwt = require('jwt-simple');
-var secret = 'lox'
+var secret = jetpack.read('./secret.text','txt');
 
-var server2 = http.createServer(exp).listen(80);
+var server2 = http.createServer(exp).listen(333);
 exp.use('/public',express.static(__dirname+'/public'));
 exp.get('/*', function(req, res){
   res.sendFile(__dirname + '/index.html');
