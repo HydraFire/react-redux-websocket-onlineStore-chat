@@ -1,0 +1,31 @@
+h1 {
+	color: #323B3C;
+	font-family: 'PT Sans Narrow';
+	font-size: 22px;
+	font-weight: 400;
+	
+	letter-spacing: 5px;
+	margin-bottom: 36px;
+	margin-left: 36px;
+	text-transform: uppercase;
+}
+
+p {
+	color: #516163;
+	font-family: 'PT Sans';
+	font-size: 22px;
+	font-weight: 300;
+	line-height: 36px;
+	
+	margin-left: 36px;
+}
+
+a {
+	color: #63B2BB;	
+}
+
+a:hover {
+	color: #323B3C;
+}
+
+
