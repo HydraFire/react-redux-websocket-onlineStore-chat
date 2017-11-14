@@ -11,7 +11,8 @@ import {blue500, pink500} from 'material-ui/styles/colors'
 import { createStore } from 'redux';
 
 const cookies = new Cookies();
-const socket = new WebSocket("ws://159.224.183.122:333/index.html");
+const socket = new WebSocket("ws://nerv.pro:333/index.html");
+//const socket = new WebSocket("ws://159.224.183.122:333/index.html");
 
 const initialState = [
  {config:{shop_add:false,login:false,registration:false,options:false},
