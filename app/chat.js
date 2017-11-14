@@ -56,6 +56,7 @@ const style = {
                 //console.log(b)
                 let mi = 0
                 let vis = 0
+                let userImg = ''
                   for(mi=0;mi<b.length;mi++){
                     //console.log(b[mi].user+' == '+v.name)
                     if(b[mi].user == v.name){
@@ -72,8 +73,9 @@ const style = {
                             })
                             console.log(hh)  
                             if(hh == v.send_to.length){
-                              console.log('Показывай')  
+                              //console.log('Показывай')  
                               vis = 1
+                              userImg = b[mi].img
                             }
                         })
                         }
@@ -81,6 +83,7 @@ const style = {
                          console.log(b[mi].visibility)
                          if(b[mi].visibility){ 
                              vis = 1
+                             userImg = b[mi].img
                          }
                         }
                     }
@@ -92,7 +95,7 @@ const style = {
                                 key={v.id}
                                 name={v.name}
                                 message={v.message}
-                                image={v.image}
+                                image={userImg}
                                 />;
                   }
          })
@@ -116,7 +119,7 @@ const style = {
                 if(v.user != this.props.zyStore[0].user.userName){
                 return (
                         <div key={i}>
-                            <img className="contact-image" src="public/img/5720df0f016901545867529e.png" width="60px" height="60px" />
+                            <img className="contact-image" src={v.img} width="60px" height="60px" />
                             {this.hendlerOnline(v.online)}
                             <RaisedButton onClick={()=>{main.hendlerVisibilityButton(v.user)}}  label={v.user} style={style} />
                             <IconButton onClick={()=>{main.hendlerVisibility(v.user)}}>

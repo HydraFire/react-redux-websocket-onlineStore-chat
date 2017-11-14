@@ -11,7 +11,7 @@ import {blue500, pink500} from 'material-ui/styles/colors'
 import { createStore } from 'redux';
 
 const cookies = new Cookies();
-const socket = new WebSocket("ws://nerv.pro:333/index.html");
+const socket = new WebSocket("ws://159.224.183.122:333/index.html");
 
 const initialState = [
  {config:{shop_add:false,login:false,registration:false,options:false},
@@ -212,6 +212,12 @@ const hendlerAddButton = function(data){
 	console.log(r)
  store.dispatch({type: 'RELOAD', payload:r[0]})
 }
+const avatarSend = function(file){
+  //let obj = {type:'LOAD_AVATAR',file:file} 
+  //socket.binaryType = 'arraybuffer';
+  //socket.binaryType = 'blob';
+  socket.send(file)
+}
 const hendlerAddShop = function(data){
 	console.log(data)
 	socket.send(JSON.stringify(data))
@@ -243,4 +249,4 @@ ReactDOM.render(
 
 export default { hendlerAddShop, hendlerAddButton, hendlerShopLoad , hendleShopLike,
  hendleGetChat, hendlerLogin, hendlerFormRegistration, hendlerRegistration, hendlerLog_out,
-  hendlerVisibility, hendlerVisibilityButton, hendlerMessageSend}
+  hendlerVisibility, hendlerVisibilityButton, hendlerMessageSend, avatarSend}

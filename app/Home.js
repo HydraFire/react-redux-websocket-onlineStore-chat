@@ -5,8 +5,21 @@ import main from '../main';
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton';
 //import './style/Home.css';
-const style = {
-  margin: 12
+
+const styles = {
+  button: {
+    margin: 12,
+  },
+  exampleImageInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
+  },
 };
 
 const Home = React.createClass({
@@ -35,18 +48,51 @@ const Home = React.createClass({
               mail: event.target.childNodes[2].childNodes[1].value,
               password:event.target.childNodes[4].childNodes[1].value,
               password_retry:event.target.childNodes[6].childNodes[1].value
+              //img:event.target.childNodes[7].childNodes[1].value
             }
             event.target.childNodes[0].childNodes[1].value = '';
             event.target.childNodes[2].childNodes[1].value = '';
             event.target.childNodes[4].childNodes[1].value = '';
             event.target.childNodes[6].childNodes[1].value = '';
-           
+           //console.log(obj)
             let sendObj = {
               type:'FORM_TO_REG',
               data:obj
             }
              console.log(sendObj)
             main.hendlerRegistration(sendObj)
+  },
+  imageRender(){
+    var avatarInput = document.querySelector('.input')
+    let img = document.querySelector('.prewImg')
+    img.src = window.URL.createObjectURL(avatarInput.files[0])
+  },
+  eventListenerInput(){
+    var avatarInput = document.querySelector('.input')
+    // let img = document.querySelector('.prewImg')
+    // img.src = this.props.newStore[0].user.options.img
+    console.log('put')
+    console.log(avatarInput)
+    if(avatarInput){
+      console.log(avatarInput.files[0])
+      avatarInput.addEventListener('change',this.imageRender)
+    }
+  },
+  hendlerFormAvatar(event){
+  event.preventDefault();
+  var file = event.target.childNodes[0].files[0]
+  console.log(event.target)
+  console.log(file.size)
+  if(file.size < 2000000){
+    main.avatarSend(file)
+  }
+/*
+    let obj = {
+      fileName:event.target.childNodes[0].childNodes[0].childNodes[0].childNodes[1].childNodes[1].files[0].name,
+      img:file
+    }
+   */
+   //console.log(obj)
   },
   hendlerReg(props){
     main.hendlerFormRegistration()
@@ -65,9 +111,24 @@ const Home = React.createClass({
         return (<div>
                  <AppBar title={this.props.newStore[0].user.userName}/>
 
-                 <RaisedButton label="admin option" secondary={true} style={style} />
-                 <RaisedButton label={<img src="https://unsplash.it/40/40"/>} secondary={true} style={style} />
-                 <RaisedButton onClick={()=>{main.hendlerLog_out()}}label="sing-out" secondary={true} style={style} />
+                 <RaisedButton label="admin option" disabled={true} style={styles.button} />
+                 <RaisedButton label="option" disabled={true} style={styles.button} />
+                 <RaisedButton onClick={()=>{main.hendlerLog_out()}}label="sing-out" secondary={true} style={styles.button} />
+                 
+                 <RaisedButton
+                        label="Изменить аватарку"
+                        labelPosition="before"
+                        style={styles.button}
+                        containerElement="label">
+                        <form onSubmit={this.hendlerFormAvatar}>
+                        <input onClick={this.eventListenerInput} className="input" type="file" style={styles.exampleImageInput} />
+                      
+                        <img className="prewImg" src={this.props.newStore[0].user.options.img}/>
+                        <input type="submit" value="Применить" style={styles.button} />
+                        </form>
+                  </RaisedButton>
+                 
+               
                </div>)
     }else{
       if(this.props.newStore[0].config.registration){
@@ -82,7 +143,7 @@ const Home = React.createClass({
                  <p/>
                  <TextField id="passwordd" floatingLabelText="retry PASSWORD :" type="password" className="search-field"/>
                  <p/>
-                 <RaisedButton type="submit"  label="registration" primary={true} style={style} />
+                 <RaisedButton type="submit"  label="registration" primary={true} style={styles.button} />
                  </form>
                </div>)
        }else{
@@ -93,9 +154,9 @@ const Home = React.createClass({
                  <form onSubmit={this.hendlerForm}>
                  <TextField id="login" floatingLabelText="LOGIN :" type="text" className="search-field"/>
                  <TextField id="passwordd" floatingLabelText="PASSWORD :" type="password" className="search-field"/>
-                 <RaisedButton type="submit" label="sing-in" style={style} />
+                 <RaisedButton type="submit" label="sing-in" style={styles.button} />
                  </form>
-                 <RaisedButton onClick={()=>{this.hendlerReg(this.props)}} label="registration" primary={true} style={style} />
+                 <RaisedButton onClick={()=>{this.hendlerReg(this.props)}} label="registration" primary={true} style={styles.button} />
                </div>)
        }
       }
