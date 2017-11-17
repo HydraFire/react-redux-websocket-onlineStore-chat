@@ -331,7 +331,11 @@ wss.on("connection", function(ws){
 
           break;
         case 'MESSAGE_DELETE':
-          let arr_chat_arr = jetpack.read('./JSON/'+ws.userX+'_chat.json','json')
+          let my_user = ws.userX
+          if(my_user.includes('Undefined')){
+            my_user = 'Undefined'
+          }
+          let arr_chat_arr = jetpack.read('./JSON/'+my_user+'_chat.json','json')
           let arr_new_n = []
           arr_new_n = arr_chat_arr.filter((v,i)=>{
             if(v.id != message.data){
@@ -342,7 +346,7 @@ wss.on("connection", function(ws){
             v.id = i;
             return v
           })
-          jetpack.write('./JSON/'+ws.userX+'_chat.json',arr_new_n)
+          jetpack.write('./JSON/'+my_user+'_chat.json',arr_new_n)
           get_chat(message,ws)
           break;
         case 'LOAD_AVATAR':
