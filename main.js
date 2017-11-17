@@ -54,6 +54,7 @@ socket.onmessage = function(event) {
 			let data = JSON.parse(event.data)
 			let state = store.getState()
 			switch(data.type) {
+
 				case 'NEW_ONLINE':
 				state[0].chat.options.forEach((v)=>{
 					let rir = false
@@ -72,9 +73,8 @@ socket.onmessage = function(event) {
 				console.log(state[0])
 				store.dispatch({type: 'RELOAD', payload: state[0]})
 				break;
+
 				case 'NEW_MESSAGE':
-
-
 				let arr_xc = state[0].chat.data.push(data.data)
 				console.log('////////*********')
 				console.log(state[0].chat.data)
@@ -87,7 +87,24 @@ socket.onmessage = function(event) {
     				console.log(vz)
     				store.dispatch({type: 'RELOAD', payload: vz})
 				break;
-    			case 'USER_CHAT':
+
+    		case 'USER_CHAT':
+            if(localStorage.userVisibility){
+              var arrXY = JSON.parse(localStorage.userVisibility)
+
+              data.options = data.options.map((v)=>{
+                arrXY.forEach((w)=>{
+                  if(v.user == w.user){
+                    if(v.user != state[0].user.userName){
+                      v.visibility = w.visibility
+                    }
+                  }
+                })
+                return v
+              })
+            }
+            
+            
     				let v = {
     					config:state[0].config,
     					shop:state[0].shop,
@@ -182,6 +199,7 @@ const hendlerVisibility = function(name){
   	v.user == name?h=i:'';
   })
   r[0].chat.options[h].visibility?r[0].chat.options[h].visibility = false:r[0].chat.options[h].visibility = true;
+  localStorage.userVisibility = JSON.stringify(r[0].chat.options)
   store.dispatch({type: 'RELOAD', payload:r[0]})
 }
 const hendlerVisibilityButton = function(name){
@@ -198,6 +216,7 @@ const hendlerVisibilityButton = function(name){
   	}
   })
   r[0].chat.options[h].visibility?r[0].chat.options[h].visibility = false:r[0].chat.options[h].visibility = true;
+  localStorage.userVisibility = JSON.stringify(r[0].chat.options)
   store.dispatch({type: 'RELOAD', payload:r[0]})
 }
 const hendleShopLike = function(data){
@@ -228,6 +247,11 @@ const hendlerAddShop = function(data){
 	r[0].config.shop_add = true
  	store.dispatch({type: 'RELOAD', payload:r[0]})
 }
+const hendlerDeleteMessage = function(id){
+  console.log(id)
+  let obj = {type:'MESSAGE_DELETE',data:id}
+  socket.send(JSON.stringify(obj))
+}
 /////////////////////////////////////////////////////////////////////////////////
 const muiTheme = getMuiTheme({
 	palette:{
@@ -250,4 +274,4 @@ ReactDOM.render(
 
 export default { hendlerAddShop, hendlerAddButton, hendlerShopLoad , hendleShopLike,
  hendleGetChat, hendlerLogin, hendlerFormRegistration, hendlerRegistration, hendlerLog_out,
-  hendlerVisibility, hendlerVisibilityButton, hendlerMessageSend, avatarSend}
+  hendlerVisibility, hendlerVisibilityButton, hendlerMessageSend, avatarSend, hendlerDeleteMessage}

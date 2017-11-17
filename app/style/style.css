@@ -42,7 +42,9 @@
   padding: 5px;
   border-bottom: 1px dotted grey;
 }
-
+.contact-info {
+  width: 100%;
+}
 .contact-image {
   border-radius: 50%;
   margin: 5px;
@@ -51,6 +53,10 @@
 .contact-name {
   font-size: 20px;
   font-weight: bold;
+}
+.contact-delete {
+  font-size: 20px;
+  float: right;
 }
 
 .contact-number {

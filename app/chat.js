@@ -17,7 +17,9 @@ const style = {
 	                    <li className="contact">
 	                        <img className="contact-image" src={this.props.image} width="60px" height="60px" />
 	                        <div className="contact-info">
+                            <div onClick={()=>{main.hendlerDeleteMessage(this.props.id)}} className="contact-delete">x</div>
 	                            <div className="contact-name"> {this.props.name} </div>
+                                
 	                            <div className="contact-number"> {this.props.message} </div>
 	                        </div>
 	                    </li>
@@ -93,6 +95,7 @@ const style = {
                   if(vis == 1){
                   return <Contact
                                 key={v.id}
+                                id={v.id}
                                 name={v.name}
                                 message={v.message}
                                 image={userImg}

@@ -95,8 +95,47 @@ wss.on("connection", function(ws){
     hendlerOnlineRefresh(y)
     return y
   }
+  var get_chat = function(message,ws){
+    let dda = []
+    user_db.forEach((v,i)=>{
+      let ji = false
+      onlineList.forEach((tj)=>{
+        let nnn = tj[0]
+        if(nnn.includes('Undefined')){
+          nnn = 'Undefined'
+        }
+        if(v.userName == nnn){
+          ji = true
+        }
+      })
 
+      dda.push({user:v.userName,visibility:true,online:ji})
+    })
+    let zzz
+    if(ws.userX.includes('Undefined')){
+      zzz = jetpack.read('./JSON/Undefined_chat.json','json')
+    }else{
+      zzz = jetpack.read('./JSON/'+ws.userX+'_chat.json','json')
+    }
+    if(zzz){
+      dda.forEach((v)=>{
+        user_db.forEach((vg)=>{
+          if(v.user == vg.userName){
+            v.img = vg.options.img
+          }
+        })
+      })
+      console.log(zzz)
+      let a = {
+        type:'USER_CHAT',
+        options: dda,
+        data: zzz
+      }
+      //console.log(a)
+      ws.send(JSON.stringify(a))
+    }
 
+  }
   onlineList.push([ws.userX,ws.id])
   hendlerOnlineRefresh(onlineList)
   var user_db = jetpack.read('./user_db.json','json');
@@ -121,7 +160,7 @@ wss.on("connection", function(ws){
       user_db.forEach((v,i)=>{
         if(v.userName == ws.userX){
           if(user_db[i].options.img != ''){
-          jetpack.remove(user_db[i].options.img)
+            jetpack.remove(user_db[i].options.img)
           }
           user_db[i].options.img = 'public/img/'+randomName+'.jpg'
         }
@@ -232,44 +271,7 @@ wss.on("connection", function(ws){
 
           /////////////////////////////////////////////////////////////////////////
         case 'GET_CHAT':
-          let dda = []
-          user_db.forEach((v,i)=>{
-            let ji = false
-            onlineList.forEach((tj)=>{
-              let nnn = tj[0]
-              if(nnn.includes('Undefined')){
-                nnn = 'Undefined'
-              }
-              if(v.userName == nnn){
-                ji = true
-              }
-            })
-
-            dda.push({user:v.userName,visibility:true,online:ji})
-          })
-          let zzz
-          if(ws.userX.includes('Undefined')){
-            zzz = jetpack.read('./JSON/Undefined_chat.json','json')
-          }else{
-            zzz = jetpack.read('./JSON/'+ws.userX+'_chat.json','json')
-          }
-          if(zzz){
-            dda.forEach((v)=>{
-              user_db.forEach((vg)=>{
-                if(v.user == vg.userName){
-                  v.img = vg.options.img
-                }
-              })
-            })
-            console.log(zzz)
-            let a = {
-              type:'USER_CHAT',
-              options: dda,
-              data: zzz
-            }
-            //console.log(a)
-            ws.send(JSON.stringify(a))
-          }
+          get_chat(message,ws)
           break;
 
         case 'MESSAGE_TO_CHAT':
@@ -327,6 +329,21 @@ wss.on("connection", function(ws){
           })
 
 
+          break;
+        case 'MESSAGE_DELETE':
+          let arr_chat_arr = jetpack.read('./JSON/'+ws.userX+'_chat.json','json')
+          let arr_new_n = []
+          arr_new_n = arr_chat_arr.filter((v,i)=>{
+            if(v.id != message.data){
+              return v
+            }         
+          })
+          arr_new_n = arr_new_n.map((v,i)=>{
+            v.id = i;
+            return v
+          })
+          jetpack.write('./JSON/'+ws.userX+'_chat.json',arr_new_n)
+          get_chat(message,ws)
           break;
         case 'LOAD_AVATAR':
           //let zzzz = encodeURI(message.file)
