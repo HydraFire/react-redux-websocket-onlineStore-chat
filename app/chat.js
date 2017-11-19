@@ -12,12 +12,42 @@ const style = {
   margin: 12
 };
 	var Contact = React.createClass({
+        calc_date: function() {
+            let dateString
+            var monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+            "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+
+            let m = new Date(this.props.date)
+            let r = new Date()
+            let sym = r.getTime() - m
+            if(!isNaN(sym)){
+                //console.log('sym = '+sym)
+                let fff = new Date(sym)
+                //console.log('fff = '+fff)
+                let day = fff.getDate() - 1
+                //console.log('day = '+day)
+                if(day < 7){
+                    let hours = fff.getUTCHours()
+                    let min = fff.getUTCMinutes()
+                    day!=0?day = day+' дней ':day = '';
+                    hours!=0?hours = hours+' часов ':hours = '';
+                    min!=0?min = min+' минут назад':min = '';
+                    dateString = day+hours+min
+                 }else{
+                    dateString = m.getUTCDate()+'.'+monthNames[m.getUTCMonth()]+'.'+m.getUTCFullYear()
+                 }
+             }else{
+                dateString = ''
+             }
+            return dateString
+        },
 	            render: function() {
 	                return (
 	                    <li className="contact">
 	                        <img className="contact-image" src={this.props.image} width="60px" height="60px" />
 	                        <div className="contact-info">
                             <div onClick={()=>{main.hendlerDeleteMessage(this.props.id)}} className="contact-delete">x</div>
+                            <div className="contact-date"> {this.calc_date()}&#160;&#160;&#160;</div>
 	                            <div className="contact-name"> {this.props.name} </div>
                                 
 	                            <div className="contact-number"> {this.props.message} </div>
@@ -98,6 +128,7 @@ const style = {
                                 id={v.id}
                                 name={v.name}
                                 message={v.message}
+                                date={v.time}
                                 image={userImg}
                                 />;
                   }

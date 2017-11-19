@@ -281,6 +281,8 @@ wss.on("connection", function(ws){
               let zzz = jetpack.read('./JSON/'+v.user+'_chat.json','json')
               let vobj = {}
               let userN = ws.userX
+              let realTime = new Date()
+              realTime = realTime.getTime()
               if(userN.includes('Undefined')){
                 userN = 'Undefined'
               }
@@ -289,7 +291,7 @@ wss.on("connection", function(ws){
                   "id": zzz.length,
                   "name": userN,
                   "message": message.data,
-                  "time":'',
+                  "time":realTime,
                   "send_to":message.options
                 }
               }else{
@@ -297,7 +299,7 @@ wss.on("connection", function(ws){
                   "id": zzz.length,
                   "name": userN,
                   "message": message.data,
-                  "time":''
+                  "time":realTime
                 }
               }
               zzz.push(vobj)

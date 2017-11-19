@@ -58,7 +58,11 @@
   font-size: 20px;
   float: right;
 }
-
+.contact-date {
+  font-size: 11px;
+  color: grey;
+  float: right;
+}
 .contact-number {
   font-size: 18px;
   color: grey;
