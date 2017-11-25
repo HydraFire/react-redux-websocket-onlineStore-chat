@@ -1,4 +1,21 @@
 
+#style-3::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+
+#style-3::-webkit-scrollbar
+{
+  width: 6px;
+  background-color: #F5F5F5;
+}
+
+#style-3::-webkit-scrollbar-thumb
+{
+  background-color: #999;
+}
+
 .contacts {
   width: 100%;
   margin: 0 10%;
@@ -23,13 +40,17 @@
 }
 
 .search-field {
-  width: 100%;
-  height:120px;
+  resize: none;
+  width: 578px;
+  height:100px;
   padding: 10px;
   font-size: 16px;
 }
 
 .contacts-list {
+  height: 600px;
+  overflow:auto;
+  overflow-x:hidden;
   padding: 0;
   width: 100%;
 }
@@ -43,9 +64,11 @@
   border-bottom: 1px dotted grey;
 }
 .contact-info {
+  margin-right: 15px;
   width: 100%;
 }
 .contact-image {
+  width:60px;
   border-radius: 50%;
   margin: 5px;
 }
@@ -55,7 +78,7 @@
   font-weight: bold;
 }
 .contact-delete {
-  font-size: 20px;
+  font-size: 10px;
   float: right;
 }
 .contact-date {

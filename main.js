@@ -11,6 +11,28 @@ import {blue500, pink500} from 'material-ui/styles/colors'
 import { createStore } from 'redux';
 
 const cookies = new Cookies();
+
+window.onfocus = function(){ window.isFocus = true; }
+window.onblur = function(){ window.isFocus = false; }
+
+const aska = function(text){
+    let audio = document.getElementById('aska_audio');
+    let url = 'https://tts.voicetech.yandex.net/generate?'+
+        'key=222499e2-1e45-4b6d-aaaa-70b53b87c2ec'+
+        '&text='+encodeURI(text)+
+        '&format=mp3'+
+        '&lang=ru-RU'+
+        '&topic=queries'+
+        '&speaker=oksana'+
+        '&speed=1'+
+        '&robot=1'+
+        '&emotion=evil';//evil
+      audio.src = url;
+      audio.load();
+      audio.onloadeddata = function(){
+        audio.play();
+      }
+}
 const socket = new WebSocket("ws://nerv.pro:333/index.html");
 //const socket = new WebSocket("ws://159.224.183.122:333/index.html");
 
@@ -41,12 +63,16 @@ store.subscribe(()=>{
 
 socket.onopen = function() {
    console.log('SOCKET CONNECT')
+   window.aska_socket = true
    console.log(cookies.get('user'));
    if(cookies.get('user')){
    	let obj = {type:'HOT_LOGIN',data:cookies.get('user')}
     socket.send(JSON.stringify(obj))
    }
  };
+ socket.onclose = function(){
+  window.aska_socket = false
+ }
 
 socket.onmessage = function(event) {
 			console.log('///////////////////////')
@@ -75,16 +101,18 @@ socket.onmessage = function(event) {
 				break;
 
 				case 'NEW_MESSAGE':
-				let arr_xc = state[0].chat.data.push(data.data)
-				console.log('////////*********')
-				console.log(state[0].chat.data)
+				state[0].chat.data.push(data.data)
+				//console.log('////////*********')
+				//console.log(state[0].chat.data)
 					let vz = {
     					config:state[0].config,
     					shop:state[0].shop,
     					chat:{data:state[0].chat.data,options:state[0].chat.options},
     					user:state[0].user
     				}
-    				console.log(vz)
+            !window.isFocus?aska('Новое сообщение'):localStorage.last_aska_message = data.data.message;
+            
+    				//console.log(vz)
     				store.dispatch({type: 'RELOAD', payload: vz})
 				break;
 
@@ -103,8 +131,12 @@ socket.onmessage = function(event) {
                 return v
               })
             }
-            
-            
+            if(!window.isFocus && localStorage.last_aska_message != data.data[data.data.length-1].message){
+              aska('новое сообщение')
+             }
+
+            window.isFocus?localStorage.last_aska_message = data.data[data.data.length-1].message:'';
+
     				let v = {
     					config:state[0].config,
     					shop:state[0].shop,
@@ -186,7 +218,7 @@ const hendlerFormRegistration = function(){
 }
 
 const hendleGetChat = function(){
-  socket.send(JSON.stringify({type:'GET_CHAT'}))
+      socket.send(JSON.stringify({type:'GET_CHAT'}))
 }
 const hendlerMessageSend = function(op,message){
 	let obj = {type:'MESSAGE_TO_CHAT',data:message,options:op}

@@ -1,3 +1,4 @@
+import main from '../main'
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
@@ -6,12 +7,32 @@ import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import Visibility from 'material-ui/svg-icons/action/visibility';
 import Visibility_off from 'material-ui/svg-icons/action/visibility-off';
-import main from '../main'
+
 import './style/style.css';
 const style = {
   margin: 12
 };
-	var Contact = React.createClass({
+const onresize = function(e) {
+   let height = e.target.outerHeight;
+   
+   let content = document.querySelector('.contacts-list')
+   content.style.height = (height-370)+'px'
+   console.log(content.scrollHeight/1.6)
+   let res = setInterval(()=>{
+                console.log(content.scrollTop)
+                if(content.scrollTop != content.scrollHeight/1.6){
+                    content.scrollTop = content.scrollHeight/1.6;
+                    
+                    clearInterval(res)
+                }
+            },50) 
+   
+   console.log(content.scrollTop)
+}
+window.addEventListener("resize", onresize);
+//window.addEventListener("DOMContentLoaded",()=>{main.hendleGetChat()})
+	
+    var Contact = React.createClass({
         calc_date: function() {
             let dateString
             var monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
@@ -21,11 +42,11 @@ const style = {
             let r = new Date()
             let sym = r.getTime() - m
             if(!isNaN(sym)){
-                //console.log('sym = '+sym)
+               // console.log('sym = '+sym)
                 let fff = new Date(sym)
-                //console.log('fff = '+fff)
+               // console.log('fff = '+fff)
                 let day = fff.getDate() - 1
-                //console.log('day = '+day)
+               // console.log('day = '+day)
                 if(day < 7){
                     let hours = fff.getUTCHours()
                     let min = fff.getUTCMinutes()
@@ -44,7 +65,7 @@ const style = {
 	            render: function() {
 	                return (
 	                    <li className="contact">
-	                        <img className="contact-image" src={this.props.image} width="60px" height="60px" />
+	                        <img className="contact-image" src={this.props.image} />
 	                        <div className="contact-info">
                             <div onClick={()=>{main.hendlerDeleteMessage(this.props.id)}} className="contact-delete">x</div>
                             <div className="contact-date"> {this.calc_date()}&#160;&#160;&#160;</div>
@@ -56,12 +77,19 @@ const style = {
 	                );
 	            }
 	        });
+    
     var Chat = React.createClass({
-        componentDidMount(){
-         console.log(main)
-         setTimeout(()=>{
-             main.hendleGetChat()
-         },500)
+        componentDidUpdate: function(){
+                onresize({target:{outerHeight:window.outerHeight}})
+        },
+        componentDidMount: function(){
+            let int = setInterval(()=>{
+                if(main){
+                    main.hendleGetChat()
+                    //onresize({target:{outerHeight:window.outerHeight}})
+                    clearInterval(int)
+                }
+            },50) 
         },
         handleMessageX: function(event) {
         	event.preventDefault();
@@ -93,17 +121,17 @@ const style = {
                     //console.log(b[mi].user+' == '+v.name)
                     if(b[mi].user == v.name){
                         if(v.name == this.props.zyStore[0].user.userName){
-                        console.log(v.send_to)
+                        //console.log(v.send_to)
                         if(v.send_to){
                         let hh = 0
                         v.send_to.forEach((j)=>{
                             b.forEach((zx)=>{
-                                console.log(j.user+' == '+zx.user)
+                                //console.log(j.user+' == '+zx.user)
                                 if(j.user == zx.user&&j.visibility == zx.visibility){
                                     hh++
                                 }
                             })
-                            console.log(hh)  
+                            //console.log(hh)  
                             if(hh == v.send_to.length){
                               //console.log('Показывай')  
                               vis = 1
@@ -112,7 +140,7 @@ const style = {
                         })
                         }
                         }else{
-                         console.log(b[mi].visibility)
+                         //console.log(b[mi].visibility)
                          if(b[mi].visibility){ 
                              vis = 1
                              userImg = b[mi].img
@@ -121,7 +149,7 @@ const style = {
                     }
 
                   }
-                  console.log(vis)
+                  //console.log(vis)
                   if(vis == 1){
                   return <Contact
                                 key={v.id}
@@ -133,7 +161,7 @@ const style = {
                                 />;
                   }
          })
-            console.log(a)
+            //console.log(a)
             return a
         },
         littlehendler(v){
@@ -171,11 +199,13 @@ const style = {
                 <div className="page_conteiner">
                 <div className="page">
                 <div className="user">
+                <audio src="" id="aska_audio"></audio>
                 <div><h2>Все пользователи:</h2></div>
                 { this.hendlerUserList()}
+
                 </div>
                 <div className="message">
-                    <ul className="contacts-list">
+                    <ul className="contacts-list" id="style-3">
                     
                         
                             
@@ -185,6 +215,7 @@ const style = {
                         
 
                     </ul>
+                    
                     <form onSubmit={this.handleMessageX}>
                    		<textarea rows="10" cols="45" name="text" placeholder="Search..." className="search-field"/>
                    		<input type="submit" value="Отправить"/>
@@ -195,6 +226,9 @@ const style = {
                 );
             }
         });
+
+
+
 export default connect(
 state =>({
     zyStore: state
